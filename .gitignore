@@ -1,0 +1,14 @@
+# Editor / temp files
+*.swp
+*.swo
+*.bak
+*.save
+*~
+.DS_Store
+
+# Caches
+.zcompdump*
+*.zwc
+
+# Micro syntax highlights (del paquete micro, no del usuario)
+micro/syntax/

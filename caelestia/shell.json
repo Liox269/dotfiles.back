@@ -1,0 +1,76 @@
+{
+    "appearance": {
+        "transparency": {
+            "enabled": true
+        }
+    },
+    "background": {
+        "wallpaperEnabled": true
+    },
+    "bar": {
+        "activeWindow": {
+            "compact": true,
+            "inverted": true
+        },
+        "clock": {
+            "background": false,
+            "showDate": false
+        },
+        "dragThreshold": 20,
+        "persistent": true,
+        "showOnHover": true,
+        "status": {
+            "showAudio": false,
+            "showKbLayout": false,
+            "showLockStatus": true,
+            "showMicrophone": false,
+            "showNetwork": false,
+            "showWifi": true
+        },
+        "tray": {
+            "background": false,
+            "compact": false,
+            "recolour": false
+        },
+        "workspaces": {
+            "activeTrail": false,
+            "maxWindowIcons": 4,
+            "occupiedBg": false
+        }
+    },
+    "dashboard": {
+        "dragThreshold": 50,
+        "enabled": true,
+        "showWeather": true
+    },
+    "general": {
+        "apps": {
+            "explorer": [
+                "dolphin"
+            ]
+        }
+    },
+    "launcher": {
+        "favouriteApps": [
+            "com.mastermindzh.tidal-hifi"
+        ],
+        "maxShown": 8,
+        "maxWallpapers": 10,
+        "showOnHover": false,
+        "useFuzzy": {
+            "actions": true,
+            "apps": true,
+            "schemes": true,
+            "variants": true,
+            "wallpapers": true
+        }
+    },
+    "services": {
+        "defaultPlayer": "Brave",
+        "gpuType": "NVIDIA"
+    },
+    "sidebar": {
+        "dragThreshold": 20,
+        "enabled": true
+    }
+}
