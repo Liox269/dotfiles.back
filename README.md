@@ -1,4 +1,4 @@
-# 🌌 Liox269 Dotfiles - El Manual Maestro
+# 🌌 Dotfiles
 
 ¡Bienvenido! Este repositorio es la "receta" de mi computadora. Aquí guardo todas las configuraciones que hacen que mi sistema se vea increíble y funcione rápido. 
 
@@ -6,7 +6,7 @@ Si eres nuevo en Linux o quieres probar mi configuración, **este manual es para
 
 ---
 
-## 💿 Paso 0: El Sistema Operativo (Para Principiantes)
+## 💿 Paso 0: El Sistema Operativo
 
 Para que mis configuraciones funcionen exactamente como en las capturas, necesitas instalar la distribución de Linux que yo uso.
 
