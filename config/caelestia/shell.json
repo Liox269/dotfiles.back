@@ -1,0 +1,186 @@
+{
+    "appearance": {
+        "transparency": {
+            "enabled": true
+        }
+    },
+    "background": {
+        "wallpaperEnabled": false
+    },
+    "bar": {
+        "activeWindow": {
+            "compact": true,
+            "inverted": true,
+            "showOnHover": true
+        },
+        "clock": {
+            "background": true,
+            "showDate": true,
+            "showIcon": false,
+            "showSeconds": false
+        },
+        "dragThreshold": 20,
+        "persistent": true,
+        "popouts": {
+            "activeWindow": true,
+            "statusIcons": true,
+            "tray": true
+        },
+        "scrollActions": {
+            "volume": true,
+            "workspaces": true
+        },
+        "showOnHover": true,
+        "status": {
+            "showAudio": false,
+            "showKbLayout": false,
+            "showLockStatus": true,
+            "showMicrophone": false,
+            "showNetwork": false,
+            "showWifi": true
+        },
+        "statusIcons": [
+            {
+                "enabled": true,
+                "id": "bluetooth"
+            },
+            {
+                "enabled": true,
+                "id": "microphone"
+            },
+            {
+                "enabled": true,
+                "id": "audio"
+            }
+        ],
+        "tray": {
+            "background": true,
+            "compact": false,
+            "recolour": false
+        },
+        "workspaces": {
+            "activeIndicator": true,
+            "activeTrail": true,
+            "maxWindowIcons": 1,
+            "occupiedBg": true,
+            "perMonitor": true,
+            "perMonitorWorkspaces": true,
+            "showUnoccupied": true,
+            "showWindows": true,
+            "showWindowsOnSpecialWorkspaces": true,
+            "shown": 4
+        }
+    },
+    "dashboard": {
+        "dragThreshold": 10,
+        "enabled": true,
+        "mediaUpdateInterval": 300,
+        "performance": {
+            "showBattery": false
+        },
+        "resourceUpdateInterval": 1000,
+        "showClockSeconds": false,
+        "showDashboard": true,
+        "showMedia": true,
+        "showOnHover": true,
+        "showPerformance": true,
+        "showWeather": false
+    },
+    "general": {
+        "apps": {
+            "explorer": [
+                "dolphin"
+            ]
+        }
+    },
+    "launcher": {
+        "actionPrefix": ">",
+        "dragThreshold": 20,
+        "enableDangerousActions": true,
+        "enabled": true,
+        "favouriteApps": [
+            "com.mastermindzh.tidal-hifi",
+            "com.discordapp.Discord",
+            "org.waywallen.waywallen",
+            "io.dbeaver.DBeaver"
+        ],
+        "hiddenApps": [
+        ],
+        "maxShown": 10,
+        "maxWallpapers": 6,
+        "showOnHover": false,
+        "useFuzzy": {
+            "actions": true,
+            "apps": true,
+            "schemes": true,
+            "variants": true,
+            "wallpapers": true
+        },
+        "vimKeybinds": true
+    },
+    "nexus": {
+        "networkRescanInterval": 10000
+    },
+    "notifs": {
+        "openExpanded": true
+    },
+    "services": {
+        "audioIncrement": 0.1,
+        "brightnessIncrement": 0.1,
+        "clockFormat": "TwelveHour",
+        "dataUnits": "Binary",
+        "defaultPlayer": "Tidal Hi-Fi",
+        "gpuType": "Nvidia",
+        "maxVolume": 1,
+        "smartScheme": true,
+        "visualiserBars": 10,
+        "weatherUnits": "Celsius"
+    },
+    "sidebar": {
+        "dragThreshold": 0,
+        "enabled": true
+    },
+    "utilities": {
+        "cards": {
+            "keepAwake": true,
+            "quickToggles": true,
+            "recorder": true
+        },
+        "enabled": true,
+        "quickToggles": [
+            {
+                "enabled": false,
+                "id": "wifi"
+            },
+            {
+                "enabled": true,
+                "id": "bluetooth"
+            },
+            {
+                "enabled": true,
+                "id": "mic"
+            },
+            {
+                "enabled": true,
+                "id": "settings"
+            },
+            {
+                "enabled": true,
+                "id": "gameMode"
+            },
+            {
+                "enabled": true,
+                "id": "dnd"
+            },
+            {
+                "enabled": false,
+                "id": "vpn"
+            }
+        ],
+        "toasts": {
+            "audioOutputChanged": true,
+            "fullscreen": "all",
+            "nowPlaying": false
+        }
+    }
+}
