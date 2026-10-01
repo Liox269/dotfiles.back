@@ -1,0 +1,9 @@
+2026/09/18-19:21:47.190 21cc4 Reusing MANIFEST /home/liox/.config/tidal-hifi/IndexedDB/https_tidal.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/09/18-19:21:47.190 21cc4 Recovering log #7
+2026/09/18-19:21:47.191 21cc4 Reusing old log /home/liox/.config/tidal-hifi/IndexedDB/https_tidal.com_0.indexeddb.leveldb/000007.log 
+2026/09/18-19:21:48.981 21cc2 Compacting 1@1 + 1@2 files
+2026/09/18-19:21:48.985 21cc2 Generated table #10@1: 162 keys, 40861 bytes
+2026/09/18-19:21:48.985 21cc2 Compacted 1@1 + 1@2 files => 40861 bytes
+2026/09/18-19:21:48.987 21cc2 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/09/18-19:21:48.987 21cc2 Delete type=2 #5
+2026/09/18-19:21:48.987 21cc2 Delete type=2 #8

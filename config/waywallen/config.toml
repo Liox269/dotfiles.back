@@ -1,0 +1,109 @@
+[global]
+last_wallpaper = "51"
+queue_mode = "parallel"
+rotation_secs = 0
+audio_fade_ms = 0
+mute_when_other_audio = false
+audio_capture_enabled = false
+manual_muted = false
+wallpaper_filter_json = '{"filters":[],"filter_logics":[]}'
+wallpaper_sorts = []
+wallpaper_skip_types = []
+wallpaper_filter_tags = []
+wallpaper_skip_content_ratings = []
+plugin_update_notifications = true
+duplicate_renderers_for_same_wallpaper = false
+pointer_forwarding_enabled = false
+autostart_enabled = false
+hide_tray_icon = true
+debug_logging_enabled = false
+
+[global.renderer]
+enable_audio = false
+volume = 0
+
+[global.layout]
+fillmode = "preserve_aspect_crop"
+align = "center"
+rotation = "normal"
+
+[global.layout.location]
+x = 50
+y = 50
+
+[global.auto_replay]
+any_window_scope = "current_display"
+focused_scope = "current_display"
+maximized_scope = "current_display"
+fullscreen_scope = "current_display"
+any_window = "none"
+focused = "none"
+maximized = "pause"
+fullscreen = "pause"
+session_locked = "none"
+session_inactive = "none"
+gamemode = "none"
+resume_delay_ms = 250
+
+[global.pause_effect]
+kind = "blur"
+
+[global.pause_effect.blur]
+radius = 39
+
+[global.transition]
+kind = "none"
+duration_ms = 500
+angle = 0
+
+[global.transition.origin]
+x = 50
+y = 50
+
+[plugin.waywallen-image]
+resolution = "0"
+fps = "30"
+render_node = ""
+
+[plugin.waywallen-video]
+fps = "30"
+volume = "100"
+render_node = ""
+resolution = "0"
+hwdec = "auto"
+loop_file = "inf"
+enable_audio = "true"
+
+[plugin.wescene-renderer]
+enable_audio = "true"
+msaa = "1"
+render_node = ""
+hwdec = "auto"
+custom_extent = "1080"
+volume = "100"
+resolution = "2"
+fps = "30"
+
+[plugin.weweb-renderer]
+volume = "100"
+resolution = "2"
+render_node = ""
+fps = "30"
+enable_audio = "true"
+shared_texture_enabled = "false"
+remote_debugging_port = "0"
+
+[display.layer-cf25aa7bf7e819db3948ca2dcdae34d2]
+last_wallpaper = "9602"
+
+[display.layer-0369a3eeac635b69e9c2df4232919061]
+last_wallpaper = "9602"
+
+[display.layer-74b9ec0933c19f1fb04e27fe426d84d7]
+fillmode = "preserve_aspect_crop"
+last_wallpaper = "51"
+
+[display.layer-a3f59dbd0bc056a99b47bb856b03db81]
+last_wallpaper = "51"
+
+[canvas]
