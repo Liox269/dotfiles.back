@@ -1,91 +1,107 @@
-# dotfiles — Hyprland + caelestia rice
+# 🌌 Liox269 Dotfiles - El Manual Maestro
 
-Mis dotfiles personales de Hyprland y resto del window manager sobre **CachyOS**.
+¡Bienvenido! Este repositorio es la "receta" de mi computadora. Aquí guardo todas las configuraciones que hacen que mi sistema se vea increíble y funcione rápido. 
 
-## ⚠️ Basado en caelestia-dots
+Si eres nuevo en Linux o quieres probar mi configuración, **este manual es para ti**. He diseñado todo para que sea fácil de instalar, incluso si nunca has tocado una terminal.
 
-Este repo **incluye únicamente los archivos personalizados del usuario**. La mayoría
-del comportamiento del WM (animaciones, keybinds, reglas de ventana, esquema de
-colores base) viene del rice **[caelestia-dots/caelestia](https://github.com/caelestia-dots/caelestia)**,
-que se encuentra clonado localmente en `~/caelestia` y NO se incluye aquí.
+---
 
-Crédits: <https://github.com/caelestia-dots/caelestia>
+## 🌟 ¿Qué hace especial a este sistema?
 
-## Contenido
+La magia principal es la **Sincronización de Colores Automática**. 
+Imagínate que cambias el fondo de pantalla: el sistema "lee" los colores de esa imagen y, en un segundo, cambia el color de las ventanas, la terminal, la barra de tareas y las aplicaciones para que todo combine perfectamente. ¡Como magia! ✨
 
-```
-hypr/      hyprland.conf + scheme + shader personalizado (mi_vibrance.glsl)
-caelestia/ overrides del usuario sobre el rice (user-config.fish, hypr-user.lua, ...)
-uwsm/      variables de entorno (env, env-hyprland)
-foot/      terminal
-fish/      shell (config + greeting + variables)
-fuzzel/    launcher
-btop/      monitor de sistema + tema caelestia
-micro/     editor (settings + colorschemes catppuccin)
-cava/      visualizador de audio
-fastfetch/ info del sistema
-starship/  prompt
-shell/     .zshrc, .bashrc, .bash_profile, .bash_logout
-```
+---
 
-## Paquetes necesarios (Arch/CachyOS)
+## 🛠️ Guía para Principiantes: ¿Qué necesito antes de empezar?
 
-```bash
-sudo pacman -S hyprland hyprshade uwsm foot fish fisher starship fuzzel \
-                btop micro cava fastfetch swww hyprlock hypridle
-```
+Para que mi configuración funcione, tu computadora debe tener instalado **CachyOS** (o una base Arch Linux). Antes de ejecutar mi instalador, necesitas instalar estas herramientas (puedes buscarlas en la tienda de aplicaciones o usar la terminal):
 
-Adicional (AUR, opcional):
+### 📦 Lo Básico (Imprescindibles)
+- **Git**: Para descargar este repositorio.
+- **Fish**: Es la "consola" o terminal donde escribes los comandos.
+- **Hyprland**: Es el "cerebro" que organiza las ventanas en la pantalla.
+- **Starship**: Es lo que hace que la línea donde escribes comandos se vea bonita y con iconos.
 
-```bash
-yay -S catppuccin-micro-git  # los colorschemes ya vienen en este repo
-```
+### 🎨 Lo Visual (Para que los colores funcionen)
+- **Waywallen**: El programa para poner fondos de pantalla.
+- **Matugen**: El motor que extrae los colores del fondo.
 
-## Instalación
+---
 
-El repo **no usa symlinks automáticos** (no es Stow). Para aplicar los dotfiles:
+## 🚀 Cómo instalarlo (Paso a Paso)
 
-1. **Clonar caelestia upstream** (necesario, estos dotfiles lo dan por sentado):
+No te asustes por la terminal, solo copia y pega estos comandos uno por uno:
 
+1. **Descargar mis configuraciones:**
    ```bash
-   git clone https://github.com/caelestia-dots/caelestia.git ~/caelestia
+   git clone https://github.com/Liox269/dotfiles.back ~/dotfiles
    ```
 
-2. **Copiar las configs a `~/.config/`**:
-
+2. **Entrar a la carpeta:**
    ```bash
-   cp -r hypr/*    ~/.config/hypr/
-   cp -r caelestia/* ~/.config/caelestia/
-   cp -r uwsm/*    ~/.config/uwsm/
-   cp -r foot/*    ~/.config/foot/
-   cp -r fish/*    ~/.config/fish/
-   cp -r fuzzel/*  ~/.config/fuzzel/
-   cp -r btop/*    ~/.config/btop/
-   cp -r micro/*   ~/.config/micro/
-   cp -r cava/*    ~/.config/cava/
-   cp -r fastfetch/* ~/.config/fastfetch/
-   mkdir -p ~/.config && cp starship/starship.toml ~/.config/
+   cd ~/dotfiles
    ```
 
-3. **Copiar los archivos de shell al home**:
-
+3. **Dar permiso al instalador y ejecutarlo:**
    ```bash
-   cp shell/.zshrc        ~/
-   cp shell/.bashrc       ~/
-   cp shell/.bash_profile ~/
-   cp shell/.bash_logout  ~/
+   chmod +x install.sh
+   ./install.sh
    ```
 
-4. **Reiniciar Hyprland** (`Super+Esc` para menu, o reiniciar sesión).
+**¿Qué acaba de pasar?** El script `install.sh` creó "puentes" (enlaces simbólicos) entre tu sistema y esta carpeta. Si cambias algo en la configuración, se guarda aquí automáticamente. Además, si tenías algo ya configurado, el script lo guardó como `.bak` para que no pierdas nada.
 
-## Hardware probado
+---
 
-- 2 monitores: DP-2 (1920x1080@60) + HDMI-A-1 (1920x1080@144)
-- GPU NVIDIA (ver `~/.config/hypr/hyprland.conf` para `QT_FFMPEG_DECODING_HW_DEVICE_TYPES`)
-- Distro: CachyOS (kernel cachyos, perfil gamer + nvidia)
+## ⌨️ Guía de Atajos (¿Cómo controlo todo?)
 
-## Notas
+En Hyprland no usas mucho el ratón, usas el teclado. La tecla **SUPER** es generalmente la tecla de **Windows**.
 
-- `~/.config/hypr/scheme/current.{conf,lua}` es el esquema personalizado activo.
-- `~/.config/hypr/shaders/mi_vibrance.glsl` es un shader Hyprland propio (vibrance).
-- El wallapper (`swww img ~/Descargas/_.jpeg`) está hardcodeado en `hyprland.conf`.
+### 🛠️ Funciones Especiales (Magia de Liox)
+| Teclas | ¿Qué hace? |
+| :--- | :--- |
+| `SUPER` + `ALT` + `V` | **Modo Vibrante**: Hace que los colores de la pantalla se vean mucho más vivos y saturados. |
+| `SUPER` + `ALT` + `SHIFT` + `V` | **Modo Normal**: Quita el efecto vibrante y vuelve a los colores originales. |
+
+### 🚀 Atajos Básicos (Para empezar a navegar)
+*(Nota: Estos son los atajos estándar de mi configuración)*
+- `SUPER` + `Q`: Abre la terminal (para escribir comandos).
+- `SUPER` + `C`: Cierra la ventana que tienes abierta.
+- `SUPER` + `M`: Sale de Hyprland y vuelve a la pantalla de inicio de sesión.
+- `SUPER` + `E`: Abre el explorador de archivos.
+- `SUPER` + `V`: Abre el menú de aplicaciones (donde buscas tus programas).
+- `SUPER` + `R`: Abre el lanzador rápido para ejecutar algo.
+
+---
+
+## 📂 ¿Dónde está cada cosa? (Para los curiosos)
+
+Si quieres cambiar algo manualmente, busca aquí:
+- **Colores y Temas**: `~/dotfiles/config/matugen`
+- **Atajos y Ventanas**: `~/dotfiles/config/hypr/hyprland.conf`
+- **Consola/Terminal**: `~/dotfiles/config/fish`
+- **Fondos de Pantalla**: `~/dotfiles/config/waywallen`
+- **Scripts Maestros**: `~/dotfiles/bin/`
+
+---
+
+## 💡 Soluciones a Problemas Comunes
+
+**"Instalé todo pero los colores no cambian"**
+$\rightarrow$ Asegúrate de tener instalado `matugen` y `waywallen`. Luego, intenta cambiar el fondo de pantalla desde Waywallen.
+
+**"Quiero volver a mi configuración anterior"**
+$\rightarrow$ El instalador creó archivos `.bak` en tu carpeta `.config`. Solo tienes que borrar el enlace simbólico y renombrar el archivo `.bak` a su nombre original.
+
+**"El comando `install.sh` me da error de permiso"**
+$\rightarrow$ No olvides ejecutar `chmod +x install.sh` antes de lanzarlo.
+
+---
+
+## 📈 ¿Cómo mejorar este sistema?
+Este es un proyecto vivo. Si encuentras una forma de hacerlo más rápido o más bonito:
+1. Haz el cambio en tu carpeta `~/dotfiles`.
+2. Sube los cambios a GitHub.
+3. ¡Disfruta de tu nueva mejora!
+
+**Creado con ❤️ por [Liox269](https://github.com/Liox269). ¡Bienvenido al mundo de Linux!** 🚀
