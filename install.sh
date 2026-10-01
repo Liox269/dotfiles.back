@@ -27,7 +27,6 @@
       ln -s "$src" "$dst"
       echo "${GREEN}✅ Vinculado:${NC} $dst -> $src"
   }
-  }
 
   echo "\n${BLUE}📦 Procesando carpetas de configuración...${NC}"
   for dir in config/*/; do
@@ -38,6 +37,17 @@
       fi
       link_config "$HOME/dotfiles/$dir" "$HOME/.config/$folder_name"
   done
+
+  echo "\n${BLUE}🛠️  Instalando scripts y binarios...${NC}"
+  mkdir -p "$HOME/.local/bin"
+  if [ -d "./bin" ]; then
+      for script in bin/*; do
+          [ -e "$script" ] || continue
+          script_name=${script##*/}
+          link_config "$HOME/dotfiles/bin/$script_name" "$HOME/.local/bin/$script_name"
+          chmod +x "$HOME/.local/bin/$script_name"
+      done
+  fi
 
   echo "\n${BLUE}📄 Procesando archivos individuales...${NC}"
   if [ -f "./config/starship/starship.toml" ]; then
