@@ -23,25 +23,81 @@ def run(*args: str, timeout: float = 2.0) -> str | None:
         return None
 
 
+# Identificamos aplicaciones por clase, nunca por coincidencia aislada con el titulo.
+EMULATOR_CLASSES = {
+    'eden': 'Eden', 'dolphin-emu': 'Dolphin', 'dolphin-emu-qt2': 'Dolphin',
+    'ryujinx': 'Ryujinx', 'yuzu': 'Yuzu', 'suyu': 'Suyu', 'sudachi': 'Sudachi',
+    'cemu': 'Cemu', 'rpcs3': 'RPCS3', 'pcsx2-qt': 'PCSX2', 'duckstation-qt': 'DuckStation',
+    'ppsspp': 'PPSSPP', 'retroarch': 'RetroArch', 'xemu': 'xemu',
+}
+EDEN_TITLE = re.compile(r"^Eden\s*\|.*?\|\s*([^|]+?)\s*\(64-bit\)(?:\s*\||$)", re.I)
+DOLPHIN_TITLE = re.compile(r"^Dolphin\s+[^|]+\|.*?\|\s*([^|]+?)\s*\([A-Z0-9]{6}\)\s*$", re.I)
+EMULATOR_MENU = re.compile(r"^(?:Eden|Dolphin(?:\s+\d+[.\w-]*)?|Ryujinx|Yuzu|Suyu|Sudachi|Cemu|RPCS3|PCSX2|DuckStation|PPSSPP|RetroArch|xemu)(?:\s*[|:-]\s*(?:Settings|Configuration|Preferences|Ajustes|Configuraci[oó]n|Log|Logs|Game List|Lista de juegos))?\s*$", re.I)
+
+
+def parse_emulator_title(cls: str, title: str) -> str | None:
+    emulator = EMULATOR_CLASSES.get(cls.casefold())
+    if emulator is None or not title.strip():
+        return None
+    title = title.strip()
+    if EMULATOR_MENU.fullmatch(title):
+        return None
+    if emulator == 'Eden':
+        match = EDEN_TITLE.match(title)
+        return match.group(1).strip() if match else None
+    if emulator == 'Dolphin':
+        match = DOLPHIN_TITLE.match(title)
+        return match.group(1).strip() if match else None
+    # Otros emuladores: solo consideramos un titulo de juego si el emulador
+    # publica un nombre distinguible en el titulo. No inventamos el juego.
+    for separator in (' | ', ' - ', ' — '):
+        parts = [x.strip() for x in title.split(separator) if x.strip()]
+        if len(parts) >= 2:
+            candidates = [x for x in parts if emulator.casefold() not in x.casefold()]
+            if candidates:
+                candidate = candidates[-1]
+                if len(candidate) > 2 and candidate.casefold() not in ('settings', 'preferences', 'configuration'):
+                    return candidate
+    return None
+
+
 def clients_to_games(clients: object) -> list[dict]:
     if not isinstance(clients, list):
         return []
     games = []
+    seen_emulators = set()
     for client in clients:
         if not isinstance(client, dict):
             continue
-        cls = str(client.get('class') or '')
+        cls = str(client.get('class') or '').strip()
+        title = str(client.get('title') or '').strip()
         tags = client.get('tags') or []
         if isinstance(tags, str):
             tags = [tags]
-        if not GAME_CLASS.search(cls) and not (isinstance(tags, list) and any(str(t).lower() == 'game' for t in tags)):
+        is_generic_game = bool(GAME_CLASS.fullmatch(cls)) or (isinstance(tags, list) and any(str(t).casefold() == 'game' for t in tags))
+        emulator = EMULATOR_CLASSES.get(cls.casefold())
+        emu_game = parse_emulator_title(cls, title) if emulator else None
+        # Sin un titulo de juego verificable el frontend no inventa una partida.
+        if emulator and not emu_game:
             continue
+        if not is_generic_game and not emu_game:
+            continue
+        pid = client.get('pid') if type(client.get('pid')) is int else None
+        if emulator:
+            key = (cls.casefold(), pid, emu_game.casefold())
+            if key in seen_emulators:
+                continue
+            seen_emulators.add(key)
+        ws = client.get('workspace')
         games.append({
-            'title': str(client.get('title') or cls),
+            'title': emu_game or title or cls,
             'class': cls,
-            'pid': client.get('pid') if isinstance(client.get('pid'), int) else None,
-            'workspace': client.get('workspace', {}).get('name') if isinstance(client.get('workspace'), dict) else None,
+            'pid': pid,
+            'workspace': str(ws.get('name')) if isinstance(ws, dict) and ws.get('name') is not None else None,
             'focused': bool(client.get('focusHistoryID') == 0),
+            'platform': emulator or ('Steam' if cls.lower().startswith('steam_app_') else 'Game'),
+            'emulated': bool(emulator),
+            'address': str(client.get('address')) if isinstance(client.get('address'), str) else None,
         })
     return games
 
