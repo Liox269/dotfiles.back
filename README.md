@@ -1,5 +1,11 @@
 # Liox Dotfiles
 
+<!-- LIOX_PREVIEW_INSTALLER_START -->
+
+> **Instalación: estado Preview.** El instalador antiguo `install.sh` NO es el asistente probado en 2026. Para inspección, preparación e instalación **únicamente en `/tmp`**, sigue la [guía de Liox Installer v1.0 Preview](docs/INSTALLER.md). Aún **no existe instalación automática segura de los dotfiles en una PC nueva**, ni verificación de Caelestia QML limpio.
+
+<!-- LIOX_PREVIEW_INSTALLER_END -->
+
 Configuración personal de **CachyOS + Hyprland (Lua) + Caelestia Shell**, con fondos administrados por **Waywallen**, colores generados con **Matugen**, integración **DualSense**, una pestaña **Gaming** y controles **Advanced Appearance** dentro de los ajustes.
 
 > **Estado del proyecto:** configuración personalizada, probada en el escritorio del autor. No es un instalador universal ni una distribución de Linux. Algunas funciones necesitan adaptar rutas, versiones y servicios al equipo de destino.
