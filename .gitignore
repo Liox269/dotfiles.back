@@ -12,3 +12,28 @@
 
 # Micro syntax highlights (del paquete micro, no del usuario)
 micro/syntax/
+# Datos privados y sesiones
+config/tidal-hifi/
+config/TIDAL Hi-Fi/
+**/Cookies
+**/Cookies-journal
+**/Local Storage/
+**/Session Storage/
+**/IndexedDB/
+**/GPUCache/
+**/Cache/
+**/Code Cache/
+
+# Configuraciones locales y secretos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.token
+
+# Archivos temporales
+__pycache__/
+*.pyc
+*.log
+*.bak.*
