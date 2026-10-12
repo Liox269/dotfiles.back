@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls as QQC
 import Quickshell
 import Quickshell.Io
 import Caelestia.Config
@@ -250,8 +251,19 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         visible: root.games.length > 0
+                        id: gamesScroll
                         clip: true
+                        interactive: contentHeight > height
+                        boundsBehavior: Flickable.StopAtBounds
+                        flickableDirection: Flickable.VerticalFlick
+                        contentWidth: width
                         contentHeight: gameItems.implicitHeight
+
+                        QQC.ScrollBar.vertical: QQC.ScrollBar {
+                            policy: gamesScroll.contentHeight > gamesScroll.height ? QQC.ScrollBar.AsNeeded : QQC.ScrollBar.AlwaysOff
+                            width: 5
+                        }
+
                         ColumnLayout {
                             id: gameItems
                             width: parent.width
@@ -263,6 +275,14 @@ Item {
                                     required property var modelData
                                     readonly property string appClass: String(modelData.class ?? "")
                                     readonly property string steamId: appClass.startsWith("steam_app_") ? appClass.slice(10) : ""
+                                    readonly property string platformLabel: {
+                                        const p = String(modelData.platform || "").trim();
+                                        if (p) return p;
+                                        if (steamId) return "Steam";
+                                        if (appClass === "eden") return "Eden";
+                                        if (appClass === "dolphin-emu") return "Dolphin";
+                                        return "Juego";
+                                    }
                                     Layout.fillWidth: true
                                     implicitHeight: gameInfo.implicitHeight + 29
                                     radius: 14
@@ -288,10 +308,30 @@ Item {
                                         StyledText {
                                             Layout.fillWidth: true
                                             text: String(gameTile.modelData.title || "Juego sin nombre").trim()
-                                            font.pixelSize: 25
+                                            font.pixelSize: 21
                                             font.bold: true
                                             color: root.heading
                                             elide: Text.ElideRight
+                                        }
+                                        RowLayout {
+                                            Layout.fillWidth: true
+                                            spacing: 6
+                                            Rectangle {
+                                                implicitWidth: platformText.implicitWidth + 18
+                                                implicitHeight: 23
+                                                radius: 8
+                                                color: root.accentSoft
+                                                border.color: root.accentLine
+                                                StyledText {
+                                                    id: platformText
+                                                    anchors.centerIn: parent
+                                                    text: gameTile.platformLabel
+                                                    color: root.heading
+                                                    font.pixelSize: 11
+                                                    font.bold: true
+                                                }
+                                            }
+                                            Item { Layout.fillWidth: true }
                                         }
                                         StyledText {
                                             Layout.fillWidth: true
