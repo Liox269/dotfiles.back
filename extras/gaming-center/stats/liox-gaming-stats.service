@@ -1,0 +1,15 @@
+[Unit]
+Description=Liox Gaming Center session tracker
+Documentation=man:systemd.service(5)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 %h/dotfiles-clean/extras/gaming-center/stats/tracker.py watch
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+
+[Install]
+WantedBy=graphical-session.target
