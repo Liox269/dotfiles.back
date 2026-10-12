@@ -7,19 +7,28 @@ import Caelestia.Components
 import Caelestia.Config
 import qs.components
 import qs.components.controls
+import qs.services
 import qs.modules.nexus.common
 
-ColumnLayout {
+Flickable {
     id: root
 
     property int opacityPercent: 45
     property int cornerRadius: 6
     property int innerGaps: 17
+    property int outerGaps: 10
+    property bool animationsEnabled: true
     property bool blurEnabled: false
     property string resultText: "Cargando valores de Hyprland..."
 
     Layout.fillWidth: true
-    spacing: Tokens.spacing.small
+    // Limitar la altura dentro de WallpaperAndStyle para que los botones nunca queden fuera.
+    implicitHeight: Math.min(470, form.implicitHeight + 12)
+    clip: true
+    flickableDirection: Flickable.VerticalFlick
+    boundsBehavior: Flickable.StopAtBounds
+    contentWidth: width
+    contentHeight: form.implicitHeight + 12
 
     function updateFromOutput(raw) {
         try {
@@ -32,6 +41,8 @@ ColumnLayout {
                 opacityPercent = response.values.opacity;
                 cornerRadius = response.values.rounding;
                 innerGaps = response.values.gaps;
+                outerGaps = response.values.gapsOut;
+                animationsEnabled = response.values.animations;
                 blurEnabled = response.values.blur;
             }
             resultText = "Valores leídos de Hyprland. Los cambios solo se aplican al pulsar Aplicar.";
@@ -58,8 +69,14 @@ ColumnLayout {
         }
     }
 
+    ColumnLayout {
+        id: form
+        width: root.width
+        spacing: Tokens.spacing.small
+
     StyledText {
         Layout.topMargin: Tokens.spacing.large
+        color: "#E7EEF5"
         text: "Advanced appearance"
         font: Tokens.font.body.large
     }
@@ -69,7 +86,7 @@ ColumnLayout {
         wrapMode: Text.WordWrap
         text: "Ventanas de Hyprland. No modifica el wallpaper de Caelestia ni los colores de Waywallen."
         font: Tokens.font.body.small
-        color: Colours.palette.m3onSurfaceVariant
+        color: "#C5D1DB"
     }
 
     SliderRow {
@@ -103,11 +120,26 @@ ColumnLayout {
         onMoved: v => root.innerGaps = Math.round(v * 40)
     }
 
+    SliderRow {
+        icon: "view_week"
+        label: "Espacio exterior"
+        valueLabel: root.outerGaps + " px"
+        value: root.outerGaps / 40
+        onMoved: v => root.outerGaps = Math.round(v * 40)
+    }
+
+    ToggleRow {
+        text: "Animaciones de Hyprland"
+        subtext: "Conserva las curvas y velocidades personalizadas"
+        checked: root.animationsEnabled
+        onToggled: checked => root.animationsEnabled = checked
+    }
+
     StyledText {
         Layout.fillWidth: true
-        text: "Animaciones: activadas (se conserva tu configuración Lua actual)."
+        text: "Cambios reversibles con respaldo de variables.lua y animations.lua."
         wrapMode: Text.WordWrap
-        color: Colours.palette.m3onSurfaceVariant
+        color: "#C5D1DB"
         font: Tokens.font.body.small
     }
 
@@ -124,6 +156,8 @@ ColumnLayout {
                 root.blurEnabled = false;
                 root.cornerRadius = 6;
                 root.innerGaps = 17;
+                root.outerGaps = 10;
+                root.animationsEnabled = true;
                 root.resultText = "Valores preparados; pulsa Aplicar para guardarlos.";
             }
         }
@@ -138,7 +172,9 @@ ColumnLayout {
                     "--opacity", String(root.opacityPercent),
                     "--blur", root.blurEnabled ? "on" : "off",
                     "--rounding", String(root.cornerRadius),
-                    "--gaps", String(root.innerGaps)]);
+                    "--gaps", String(root.innerGaps),
+                    "--gaps-out", String(root.outerGaps),
+                    "--animations", root.animationsEnabled ? "on" : "off"]);
             }
         }
         IconTextButton {
@@ -158,6 +194,7 @@ ColumnLayout {
         wrapMode: Text.WordWrap
         text: root.resultText
         font: Tokens.font.label.small
-        color: Colours.palette.m3onSurfaceVariant
+        color: "#C5D1DB"
+    }
     }
 }

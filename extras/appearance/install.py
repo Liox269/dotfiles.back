@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
-"""Reversible installer for Advanced Appearance in Caelestia v2.5.0."""
+"""Reproducible, reversible Advanced Appearance v0.2.1 installer."""
 import argparse
+from datetime import datetime
 import json
-import os
 from pathlib import Path
-import re
 import shutil
 import sys
-import tempfile
-from datetime import datetime
 
-PACKAGE = Path(__file__).resolve().parent
+HERE = Path(__file__).resolve().parent
 MARKER = '// LIOX_ADVANCED_APPEARANCE_V01'
 ORIGINAL = '''        ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
@@ -21,103 +18,93 @@ ORIGINAL = '''        ToggleRow {
             onToggled: Colours.setMode(checked ? "dark" : "light")
         }'''
 INSERTION = ORIGINAL + '\n\n        ' + MARKER + '\n        AdvancedAppearance {\n            Layout.fillWidth: true\n        }'
+FILES = ('appearance.py', 'AdvancedAppearance.qml', 'install.py', 'README.md')
 
+def plan(home, repo):
+    page = home/'.config/quickshell/caelestia/modules/nexus/pages/WallpaperAndStyle.qml'
+    qml = page.with_name('AdvancedAppearance.qml')
+    ctrl = home/'.local/lib/liox-appearance/appearance.py'
+    paths = { 'page':page, 'qml':qml, 'controller':ctrl }
+    paths.update({ 'repo_'+name:repo/'extras/appearance'/name for name in FILES })
+    return paths
 
-def write(path, data):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp = tempfile.mkstemp(prefix='.lixo-appearance-', dir=path.parent)
-    try:
-        with os.fdopen(fd, 'wb') as output:
-            output.write(data)
-            output.flush()
-            os.fsync(output.fileno())
-        if path.exists():
-            os.chmod(tmp, path.stat().st_mode & 0o777)
-        os.replace(tmp, path)
-    finally:
-        if os.path.exists(tmp):
-            os.unlink(tmp)
+def desired(paths):
+    page = paths['page']
+    if not page.is_file(): raise ValueError('No existe '+str(page))
+    txt = page.read_text()
+    if MARKER in txt:
+        if txt.count(MARKER)!=1 or txt.count('AdvancedAppearance {')!=1:
+            raise ValueError('Integración existente ambigua: revisar WallpaperAndStyle.qml')
+    else:
+        if txt.count(ORIGINAL)!=1:
+            raise ValueError('WallpaperAndStyle.qml no coincide con la estructura esperada; no se modifica')
+        txt=txt.replace(ORIGINAL,INSERTION,1)
+    qml=(HERE/'AdvancedAppearance.qml').read_text()
+    if qml.count('__CONTROLLER__')!=4: raise ValueError('Plantilla QML no coincide')
+    qml=qml.replace('__CONTROLLER__',str(paths['controller']).replace('\\','\\\\').replace('"','\\"'))
+    data={'page':txt.encode(), 'qml':qml.encode(), 'controller':(HERE/'appearance.py').read_bytes()}
+    for name in FILES:
+        data['repo_'+name]=(HERE/name).read_bytes()
+    return data
 
-
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument('--dry-run', action='store_true')
-    ap.add_argument('--restore', type=Path)
-    ap.add_argument('--shell', type=Path, default=Path.home() / '.config/quickshell/caelestia')
-    ap.add_argument('--repo', type=Path, default=Path.cwd())
-    args = ap.parse_args()
-    page = args.shell.expanduser() / 'modules/nexus/pages/WallpaperAndStyle.qml'
-    component = page.parent / 'AdvancedAppearance.qml'
-    controller = Path.home() / '.local/lib/liox-appearance/appearance.py'
-    repo_dest = args.repo.expanduser() / 'extras/appearance'
-    backup_base = Path.home() / '.local/share/liox-appearance/backups'
+def run(argv=None):
+    parser=argparse.ArgumentParser()
+    x=parser.add_mutually_exclusive_group(required=True)
+    x.add_argument('--dry-run',action='store_true')
+    x.add_argument('--install',action='store_true')
+    x.add_argument('--restore',type=Path)
+    parser.add_argument('--repo',type=Path,default=Path.cwd())
+    parser.add_argument('--home',type=Path,default=Path.home(),help=argparse.SUPPRESS)
+    args=parser.parse_args(argv)
+    home=args.home.expanduser().resolve()
+    repo=args.repo.expanduser().resolve()
+    paths=plan(home,repo)
     if args.restore:
-        backup = args.restore.expanduser().resolve()
-        if not backup.is_relative_to(backup_base.resolve()) or backup == backup_base.resolve():
-            raise ValueError('Ruta de respaldo fuera del directorio permitido')
-        manifest = json.loads((backup / 'manifest.json').read_text())
-        if manifest['targets'] != [str(page), str(component), str(controller)]:
-            raise ValueError('El respaldo no corresponde a esta instalación')
-        for index, target in enumerate([page, component, controller]):
-            old = backup / f'{index}.old'
-            if old.exists():
-                write(target, old.read_bytes())
-            elif target.exists():
-                target.unlink()
-        print('Restaurado. Reinicia Caelestia manualmente.')
+        folder=args.restore.expanduser().resolve()
+        base=(home/'.local/share/liox-appearance/backups').resolve()
+        if not folder.is_relative_to(base) or folder==base: raise ValueError('Ruta de respaldo no válida')
+        manifest=json.loads((folder/'manifest.json').read_text())
+        if manifest.get('targets')!={k:str(p) for k,p in paths.items()}: raise ValueError('El respaldo no corresponde a estos destinos')
+        for key,path in paths.items():
+            previous=folder/(key+'.old')
+            if previous.is_file():
+                path.parent.mkdir(parents=True,exist_ok=True)
+                shutil.copy2(previous,path)
+            elif path.is_file(): path.unlink()
+        print('Restauración completada. Reinicia Caelestia.')
         return
-    if not page.is_file():
-        raise FileNotFoundError(page)
-    original = page.read_text()
-    if MARKER in original:
-        raise ValueError('Advanced Appearance ya está instalado; no aplicar dos veces')
-    if original.count(ORIGINAL) != 1:
-        raise ValueError('QML distinto del esperado. No se ha modificado nada.')
-    revised = original.replace(ORIGINAL, INSERTION, 1)
-    content = (PACKAGE / 'AdvancedAppearance.qml').read_text()
-    if '__CONTROLLER__' not in content:
-        raise ValueError('Plantilla QML incompleta')
-    content = content.replace('__CONTROLLER__', str(controller).replace('\\', '\\\\').replace('"', '\\"'))
-    lua = Path.home() / '.config/hypr/variables.lua'
-    if not lua.is_file():
-        raise FileNotFoundError(lua)
-    sys.path.insert(0, str(PACKAGE))
-    from appearance import snapshot
-    print('Configuración actual:', snapshot(lua.read_text()))
-    print('Archivos afectados:', page, component, controller, repo_dest, sep='\n  ')
-    print('No se modifican: Hyprland Lua durante la instalación, wallpaper, Waywallen, Matugen, Gaming o DualSense.')
+    content=desired(paths)
+    changed={key:(not path.is_file() or path.read_bytes()!=content[key]) for key,path in paths.items()}
+    for key,value in changed.items(): print(('Actualizar' if value else 'Sin cambios')+': '+str(paths[key]))
     if args.dry_run:
-        print('Simulación OK. No se ha modificado ningún archivo.')
+        print('Simulación OK. No se modificó ningún archivo.')
         return
-    backup = backup_base / datetime.now().strftime('appearance-%Y%m%d-%H%M%S-%f')
-    backup.mkdir(parents=True)
-    targets = [page, component, controller]
-    (backup / 'manifest.json').write_text(json.dumps({'targets': [str(p) for p in targets]}, indent=2))
-    for i, target in enumerate(targets):
-        if target.is_file():
-            (backup / f'{i}.old').write_bytes(target.read_bytes())
+    if not any(changed.values()):
+        print('Ya está sincronizado. Sin cambios.')
+        return
+    backup=home/'.local/share/liox-appearance/backups'/f'repro-v022-{datetime.now():%Y%m%d-%H%M%S-%f}'
+    backup.mkdir(parents=True,exist_ok=False)
+    (backup/'manifest.json').write_text(json.dumps({'targets':{k:str(p) for k,p in paths.items()}},indent=2))
+    for key,path in paths.items():
+        if path.is_file(): shutil.copy2(path,backup/(key+'.old'))
+    written=[]
     try:
-        write(page, revised.encode())
-        write(component, content.encode())
-        write(controller, (PACKAGE / 'appearance.py').read_bytes())
-        repo_dest.mkdir(parents=True, exist_ok=True)
-        for name in ('AdvancedAppearance.qml', 'appearance.py', 'install.py', 'README.md'):
-            shutil.copy2(PACKAGE / name, repo_dest / name)
+        for key,path in paths.items():
+            if changed[key]:
+                path.parent.mkdir(parents=True,exist_ok=True)
+                path.write_bytes(content[key]); written.append(key)
     except Exception:
-        for i, target in enumerate(targets):
-            old = backup / f'{i}.old'
-            if old.exists():
-                write(target, old.read_bytes())
-            elif target.exists():
-                target.unlink()
+        for key in reversed(written):
+            path=paths[key]; old=backup/(key+'.old')
+            if old.exists(): shutil.copy2(old,path)
+            elif path.exists():path.unlink()
         raise
-    print('Instalación OK. Respaldo:', backup)
-    print('Restaurar: python3 install.py --restore "' + str(backup) + '"')
-    print('Reinicia Caelestia: caelestia shell --kill; sleep 1; caelestia shell -d')
+    print('Instalación OK. Respaldo:',backup)
+    print('Restaurar: python3 '+str(HERE/'install.py')+' --restore "'+str(backup)+'" --repo "'+str(repo)+'"')
+    print('No se modifica background.wallpaperEnabled, Waywallen ni Gaming Center.')
+    print('Reinicia Caelestia para cargar la página actualizada.')
 
-if __name__ == '__main__':
-    try:
-        main()
-    except Exception as err:
-        print('ERROR:', err, file=sys.stderr)
-        sys.exit(1)
+if __name__=='__main__':
+    try: run()
+    except Exception as e:
+        print('ERROR:',e,file=sys.stderr);sys.exit(1)
