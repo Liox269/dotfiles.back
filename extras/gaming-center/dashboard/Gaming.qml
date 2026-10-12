@@ -37,10 +37,18 @@ Item {
     readonly property color accentSoft: Qt.rgba(accent.r, accent.g, accent.b, 0.22)
     readonly property color success: "#91F1BD"
 
-    function focusGame(pid): void {
-        const n = Number(pid);
-        if (!Number.isSafeInteger(n) || n <= 0) return;
-        focusProcess.exec(["hyprctl", "dispatch", "focuswindow", "pid:" + n]);
+    function focusGame(game): void {
+        if (focusProcess.running) return;
+        const addr = String(game?.address ?? "");
+        // En Hyprland Lua 'hyprctl dispatch' interpreta el argumento como
+        // un dispatcher Lua, no como el comando tradicional focuswindow.
+        // Solo admitimos direcciones hexadecimales devueltas por hyprctl clients.
+        if (!/^0x[0-9a-fA-F]+$/.test(addr)) {
+            console.warn("Gaming: dirección de ventana inválida; actualiza la lista de juegos");
+            return;
+        }
+        const dispatcher = "hl.dsp.focus({ window = 'address:" + addr + "' })";
+        focusProcess.exec(["hyprctl", "dispatch", dispatcher]);
     }
 
     function openSteam(): void {
@@ -356,7 +364,7 @@ Item {
                                             color: focusMouse.containsMouse ? root.accentSoft : root.cardBg
                                             border.color: root.accentLine
                                             StyledText { id: focusLabel; anchors.centerIn: parent; text: "↗ Ir a la ventana del juego"; color: root.heading; font.pixelSize: 12; font.bold: true }
-                                            MouseArea { id: focusMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.focusGame(gameTile.modelData.pid) }
+                                            MouseArea { id: focusMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.focusGame(gameTile.modelData) }
                                         }
                                     }
                                 }
